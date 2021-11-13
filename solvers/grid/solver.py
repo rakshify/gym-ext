@@ -13,7 +13,7 @@ from gym_ext.envs import GridEnv
 
 
 class GridSlover(Example):
-    name = "grid"
+    name = "GridWorld"
 
     @classmethod
     def train(cls, model_dir: str, **kwargs):
@@ -100,11 +100,3 @@ class GridSlover(Example):
             kwargs["direction"] = direction
             env = f"windy_{env}"
         return env, kwargs
-
-
-def main():
-    PathFinder.run()
-
-
-if __name__ == '__main__':
-    main()

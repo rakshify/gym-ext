@@ -1,0 +1,14 @@
+{
+    "name": "gym_ext",
+    "description": "An extension to gym environments",
+    "url": "https://github.com/rakshify/gym-ext",
+    "version": "0.1.10",
+    "author": "Rakshit Sharma",
+    "author_email": "rksht.shrm1@gmail.com",
+    "credits": "Rakshit Sharma",
+    "classifiers": [
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent"
+    ]
+}

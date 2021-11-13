@@ -1,3 +1,5 @@
+"""Implements the grid environment."""
+
 import os
 
 from typing import Any, Dict, List, Tuple
@@ -16,14 +18,14 @@ DEFAULT_GRID = [
 
 
 class GridEnv(gym.Env):
+    """Implements the grid environment."""
+
     name = "GridWorld"
     version = "v0"
     entry_point = "gym_ext.envs:GridEnv"
 
     def __init__(self, grid: List[List[str]] = DEFAULT_GRID):
-        """
-        Initialize a GridEnv.
-        """
+        """Initialize a GridEnv."""
         self.action_space = spaces.Discrete(4)
         self.steps_beyond_done = None
         self.elapsed_steps = None
@@ -46,7 +48,7 @@ class GridEnv(gym.Env):
 
         si = self.state
         nS = self.observation_space.n
-        nA = self.action_space.n
+        # nA = self.action_space.n
 
         # Up action
         if action == 0:
@@ -73,7 +75,7 @@ class GridEnv(gym.Env):
             reward = -1.0
         else:
             if self.steps_beyond_done == 0:
-                logger.warn(
+                print(
                     "You are calling 'step()' even though this "
                     "environment has already returned done = True. You "
                     "should always call 'reset()' once you receive 'done = "
@@ -88,6 +90,7 @@ class GridEnv(gym.Env):
         return (self.state, reward, done, {})
 
     def reset(self) -> int:
+        """Start a new episode by sampling a new state."""
         self.state = self.observation_space.sample()
         self.elapsed_steps = 0
         return self.state
@@ -134,7 +137,7 @@ class GridEnv(gym.Env):
 
         Args:
             meta: A dictionary of metadata.
-        
+
         Returns:
             A GridEnv.
         """

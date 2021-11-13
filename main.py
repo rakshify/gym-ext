@@ -1,14 +1,16 @@
+"""Example runs to run the environment using solvers."""
+
 import argparse
 import os
 import sys
 
-import gym
+# import gym
 
-from gym_ext.envs import GridEnv
+from gym_ext import gym
 
 
 def main():
-    # env = GridEnv()
+    """Main function."""
     env = gym.make('GridWorld-v0')
     state = env.reset()
     steps = 0
@@ -26,7 +28,7 @@ def main():
             if env.states[i] == "t":
                 text += " * "
             elif env.states[i] == "x" or i == state:
-                    text += f" {env.states[i]} "
+                text += f" {env.states[i]} "
             elif i == preState:
                 text += ACTIONS[action]
             else:
