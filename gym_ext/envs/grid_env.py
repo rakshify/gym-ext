@@ -4,9 +4,11 @@ import os
 
 from typing import Any, Dict, List, Tuple
 
-import gym
+# import gym
 from gym import spaces
 import numpy as np
+
+from gym_ext.envs.base_env import Env
 
 
 DEFAULT_GRID = [
@@ -17,7 +19,7 @@ DEFAULT_GRID = [
 ]
 
 
-class GridEnv(gym.Env):
+class GridEnv(Env):
     """Implements the grid environment."""
 
     name = "GridWorld"
