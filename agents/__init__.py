@@ -15,4 +15,5 @@ def get_agent_by_name(name: str) -> Agent:
 
 
 def load_agent(metadata: Dict[str, Any]):
-    pass
+    meta = metadata["agent"]
+    return get_agent_by_name(meta["name"]).load_from_meta(meta)

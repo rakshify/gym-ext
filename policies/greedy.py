@@ -1,6 +1,6 @@
 """This implements greedy policy."""
 
-from typing import List, Tuple
+from typing import Any, Dict, List, Tuple
 
 import numpy as np
 
@@ -29,3 +29,6 @@ class Greedy(Policy):
             "name": self.name,
             "epsilon": self.epsilon
         }
+
+    def load_vars(self, vars: Dict[str, Any]):
+        self.epsilon = vars["epsilon"]

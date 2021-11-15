@@ -33,8 +33,12 @@ class TableLookup(Model):
             else:
                 self.q_vals[si, ai] = update
 
-    def save_dir(self, model_dir: str) -> Dict[str, str]:
+    def save_vars(self, model_dir: str) -> Dict[str, str]:
         qvals_file = os.path.join(model_dir, "qvals.npy")
         with open(qvals_file, "wb") as f:
-            np.save(f, qvals_file)
+            np.save(f, self.q_vals)
         return {"qvals": qvals_file}
+
+    def load_vars(self, vars: Dict[str, str]):
+        with open(vars["qvals"], "rb") as f:
+            self.q_vals = np.load(f)

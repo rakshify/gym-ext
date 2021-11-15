@@ -41,7 +41,7 @@ class Env(gym.Env):
         Returns:
             A dictionary of updated metadata.
         """
-        metadata["env"] = {"name": f"{self.name}-{self.version}"}
+        metadata["env"] = {"name": self.name}
         return metadata
 
     @classmethod

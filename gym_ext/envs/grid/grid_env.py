@@ -86,7 +86,7 @@ class GridEnv(Env):
         self.elapsed_steps += 1
 
         # For rendering
-        ACTIONS = [" ^ ", " v ", " < ", " > "]
+        ACTIONS = ["^", "v", "<", ">"]
         self.path_grid[si // self.cols][si % self.cols] = ACTIONS[action]
         self.path_grid[nsi // self.cols][nsi % self.cols] = "o"
 

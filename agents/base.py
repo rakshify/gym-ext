@@ -67,6 +67,13 @@ class Agent(object):
         }
         return metadata
 
+    @classmethod
+    def load_from_meta(cls, metadata: Dict[str, Any]) -> "Agent":
+        policy = metadata["policy"]
+        agent = cls(policy["name"])
+        agent.policy.load_vars(policy)
+        return agent
+
 
 class ModelFreeAgent(Agent):
     """This is the base class for all model-free agents."""
@@ -94,6 +101,15 @@ class ModelFreeAgent(Agent):
         model_dir = os.path.join(model_dir, "agent-model-vars")
         if not os.path.isdir(model_dir):
             os.makedirs(model_dir)
-        meta["vars"] = self.model.save_dir(model_dir)
+        meta["vars"] = self.model.save_vars(model_dir)
         metadata["agent"]["model"] = meta
         return metadata
+
+    @classmethod
+    def load_from_meta(cls, metadata: Dict[str, Any]) -> "ModelFreeAgent":
+        policy = metadata["policy"]
+        model = metadata["model"]
+        agent = cls(policy["name"], model["name"])
+        agent.policy.load_vars(policy)
+        agent.model.load_vars(model["vars"])
+        return agent

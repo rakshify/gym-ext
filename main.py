@@ -43,13 +43,14 @@ def solve_env(env_name: str, step: str, model_dir: str):
         env = load_env(metadata)
         agent = load_agent(metadata)
         state = env.reset()
+        print(state)
+        steps = 0
         while True:
-            # steps += 1
+            steps += 1
             action = agent.get_action(state)
             state, reward, done, info = env.step(action)
             env.render()
-            # if done or steps > 10:
-            if done:
+            if done or steps > 10:
                 break
 
 
