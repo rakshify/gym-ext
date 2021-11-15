@@ -1,29 +1,24 @@
-import os
-import random
 import time
-
-from typing import Any, Dict, Tuple
 
 import numpy as np
 
 # from matplotlib import pyplot as plt
 
 from gym_ext.envs import Env
-from solvers import Solver
 from algorithms.algorithm import Algorithm
 
 
 class Sarsa(Algorithm):
     name = "sarsa"
 
-    def solve_episode(self, env: Env, agent: Solver, episode: int,
+    def solve_episode(self, env: Env, agent: "Agent", episode: int,
                       df: float) -> float:
         """
         Solve a single episode using the SARSA algorithm.
 
         Args:
             env: The environment to solve.
-            agent: Solver to solve the environment.
+            agent: Agent to solve the environment.
             episode: The episode number.
             df: The discount factor to use.
 
@@ -62,7 +57,7 @@ class Sarsa(Algorithm):
 class SarsaLambda(Sarsa):
     name = "sarsa_lambda"
 
-    def __init__(self, , lamda: float = 0.7):
+    def __init__(self, lamda: float = 0.7):
         """
         Initialize the SARSA lambda agent.
 
@@ -71,7 +66,7 @@ class SarsaLambda(Sarsa):
         """
         self.lamda = lamda
 
-    def solve_episode(self, env: Env, agent: Agent, episode: int,
+    def solve_episode(self, env: Env, agent: "Agent", episode: int,
                       df: float) -> float:
         """
         Solve a single episode using the SARSA lambda algorithm.

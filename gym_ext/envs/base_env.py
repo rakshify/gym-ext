@@ -1,5 +1,7 @@
 """Implements the base environment."""
 
+import os
+
 from typing import Any, Dict, List, Tuple
 
 import gym
@@ -39,7 +41,8 @@ class Env(gym.Env):
         Returns:
             A dictionary of updated metadata.
         """
-        raise NotImplementedError("Base env can not update metadata.")
+        metadata["env"] = {"name": f"{self.name}-{self.version}"}
+        return metadata
 
     @classmethod
     def load_from_meta(cls, meta: Dict[str, Any]) -> "Env":

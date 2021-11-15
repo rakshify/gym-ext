@@ -5,7 +5,7 @@ import os
 
 import gym
 
-from gym_ext.envs import _ALL_ENVS
+from gym_ext.envs import _ALL_ENVS, load_env
 
 for env in _ALL_ENVS:
     gym.envs.registration.register(

@@ -1,5 +1,6 @@
 """Implements the grid environment."""
 
+import json
 import os
 
 from typing import Any, Dict, List, Tuple
@@ -9,14 +10,7 @@ from gym import spaces
 import numpy as np
 
 from gym_ext.envs.base_env import Env
-
-
-DEFAULT_GRID = [
-    ["t", "o", "o", "o"],
-    ["o", "o", "o", "o"],
-    ["o", "o", "o", "o"],
-    ["o", "o", "o", "t"]
-]
+from gym_ext.envs.grid.utils import GridRead
 
 
 class GridEnv(Env):
@@ -26,11 +20,13 @@ class GridEnv(Env):
     version = "v0"
     entry_point = "gym_ext.envs:GridEnv"
 
-    def __init__(self, grid: List[List[str]] = DEFAULT_GRID):
+    def __init__(self, grid: List[List[str]] = None):
         """Initialize a GridEnv."""
         self.action_space = spaces.Discrete(4)
         self.steps_beyond_done = None
         self.elapsed_steps = None
+        if grid is None:
+            grid = self.read_grid()
         self.set_grid(grid)
 
     def step(self, action: int) -> Tuple[int, float, bool, dict]:
@@ -89,6 +85,11 @@ class GridEnv(Env):
         self.state = nsi
         self.elapsed_steps += 1
 
+        # For rendering
+        ACTIONS = [" ^ ", " v ", " < ", " > "]
+        self.path_grid[si // self.cols][si % self.cols] = ACTIONS[action]
+        self.path_grid[nsi // self.cols][nsi % self.cols] = "o"
+
         return (self.state, reward, done, {})
 
     def reset(self) -> int:
@@ -97,6 +98,26 @@ class GridEnv(Env):
         self.elapsed_steps = 0
         return self.state
 
+    def render(self, mode: str = "human") -> None:
+        """
+        Render the environment.
+
+        Args:
+            mode: Rendering mode.
+        """
+        if mode == "human":
+            print("\n")
+            print(".___" * self.cols + ".")
+            for row in self.path_grid:
+                print("| " + " | ".join(row) + " |")
+                print("|___" * self.cols + "|")
+
+    def read_grid(self):
+        """Read the grid from CLI."""
+        grid_size = GridRead.read_grid_size(1, 3)
+        grid = GridRead.read_grid(grid_size, 1, 3)
+        return grid
+
     def set_grid(self, grid: List[List[str]]):
         """
         Set the grid.
@@ -104,10 +125,27 @@ class GridEnv(Env):
         Args:
             grid: Grid to set.
         """
+        self.grid = grid
         self.states = np.array(grid).flatten()
         self.rows = len(grid)
         self.cols = len(grid[0])
+        self.reset_path_grid()
         self.observation_space = spaces.Discrete(self.rows * self.cols)
+
+    def reset_path_grid(self):
+        """Reset the path grid."""
+        self.path_grid = []
+        for row in range(self.rows):
+            prow = []
+            for col in range(self.cols):
+                si = row * self.cols + col
+                if self.states[si] == "t":
+                    prow.append("*")
+                elif self.states[si] == "x":
+                    prow.append("#")
+                else:
+                    prow.append("-")
+            self.path_grid.append(prow)
 
     def update_metadata(self, metadata: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -123,13 +161,9 @@ class GridEnv(Env):
         model_dir = metadata.get("model_dir")
         if not os.path.isdir(model_dir):
             raise IOError(f"Model directory {model_dir} not found")
-        meta = {
-            "grid": os.path.join(model_dir, "grid.py")
-        }
-        with open(meta["grid"], "wb") as f:
-            np.save(f, self.states)
-
-        metadata["env"].update(meta)
+        metadata["env"]["grid"] = os.path.join(model_dir, "grid.json")
+        with open(metadata["env"]["grid"], "w") as f:
+            json.dump(self.grid, f)
         return metadata
 
     @classmethod
@@ -143,7 +177,7 @@ class GridEnv(Env):
         Returns:
             A GridEnv.
         """
-        env = cls()
-        with open(meta["grid"], "rb") as f:
-            env.states = np.load(f)
+        with open(meta["grid"]) as f:
+            grid = json.load(f)
+        env = cls(grid)
         return env
