@@ -19,19 +19,17 @@ class TableLookup(Model):
     def predict(self, state: int):
         return self.q_vals[state, :]
 
-    def update(self, update: Union[np.ndarray, float], **kwargs):
-        si = kwargs.get("state")
-        ai = kwargs.get("action")
+    def update(self, update: Union[np.ndarray, float], si: int, ai: int):
         if si is None:
             if ai is None:
-                self.q_vals = update
+                self.q_vals += update
             else:
-                self.q_vals[:, ai] = update
+                self.q_vals[:, ai] += update
         else:
             if ai is None:
-                self.q_vals[si, :] = update
+                self.q_vals[si, :] += update
             else:
-                self.q_vals[si, ai] = update
+                self.q_vals[si, ai] += update
 
     def save_vars(self, model_dir: str) -> Dict[str, str]:
         qvals_file = os.path.join(model_dir, "qvals.npy")

@@ -56,8 +56,7 @@ class Agent(object):
         self.model.init_vars(env.observation_space.n, env.action_space.n)
         for i in range(num_episodes):
             eps = 1 / (i + 1)
-            # self.policy.update_policy(eps)
-            self.policy.update_policy(1.0)
+            self.policy.update_policy(eps)
             algorithm.solve_episode(env, self, i, discount_factor)
 
     def update_metadata(self, metadata: Dict[str, Any]):

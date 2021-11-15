@@ -32,7 +32,7 @@ def solve_env(env_name: str, step: str, model_dir: str):
         agent = get_agent_by_name(env_name.split("-v")[0])(
             policy="greedy", model="table_lookup")
         algorithm = get_algorithm_by_name("sarsa")()
-        agent.train(env, algorithm, num_episodes=100)
+        agent.train(env, algorithm)
         metadata = env.update_metadata(metadata={"model_dir": model_dir})
         metadata = agent.update_metadata(metadata=metadata)
         with open(os.path.join(model_dir, "metadata.json"), "w") as f:
@@ -44,13 +44,14 @@ def solve_env(env_name: str, step: str, model_dir: str):
         agent = load_agent(metadata)
         state = env.reset()
         print(state)
-        steps = 0
+        # steps = 0
         while True:
-            steps += 1
+            # steps += 1
             action = agent.get_action(state)
             state, reward, done, info = env.step(action)
             env.render()
-            if done or steps > 10:
+            # if done or steps > 10:
+            if done:
                 break
 
 

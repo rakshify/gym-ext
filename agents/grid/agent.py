@@ -24,13 +24,9 @@ class GridAgent(ModelFreeAgent):
         qvals = self.model.predict(state)
         return self.policy.get_action(qvals)
 
-    def update_model(self, update: Any, step_size: float):
-        pass
-
-    @property
-    def q_grad(self):
-        # TODO: FIX IT
-        return 0
+    def update_model(self, update: Any, step_size: float, state: int,
+                     action: int):
+        self.model.update(update * step_size, state, action)
 
     @staticmethod
     def _print_path_grid(path_grid: List[List[str]]):
