@@ -3,9 +3,9 @@
 from typing import Any, Dict
 
 from gym_ext.envs.base_env import Env
-from gym_ext.envs.grid import GridEnv, OneHotGridEnv
+from gym_ext.envs.grid import GridEnv, OneHotGridEnv, ContGridEnv
 
-_ALL_ENVS = [GridEnv, OneHotGridEnv]
+_ALL_ENVS = [GridEnv, OneHotGridEnv, ContGridEnv]
 _REGISTERED_ENVS = {e.name: e for e in _ALL_ENVS}
 
 

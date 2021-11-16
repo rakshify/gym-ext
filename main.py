@@ -29,10 +29,10 @@ def solve_env(env_name: str, step: str, model_dir: str):
     """Solve the environment."""
     if step == "train":
         env = gym.make(env_name)
-        agent = get_agent_by_name("GridWorld")(
-            policy="greedy", model="linear")
-        algorithm = get_algorithm_by_name("sarsa")()
-        agent.train(env, algorithm)
+        agent = get_agent_by_name("ContGridWorld")(
+            env, policy="greedy", model="linear")
+        algorithm = get_algorithm_by_name("sarsa_lambda")()
+        agent.train(algorithm)
         metadata = env.update_metadata(metadata={"model_dir": model_dir})
         metadata = agent.update_metadata(metadata=metadata)
         with open(os.path.join(model_dir, "metadata.json"), "w") as f:
@@ -41,7 +41,7 @@ def solve_env(env_name: str, step: str, model_dir: str):
         with open(os.path.join(model_dir, "metadata.json")) as f:
             metadata = json.load(f)
         env = load_env(metadata)
-        agent = load_agent(metadata)
+        agent = load_agent(metadata, env)
         state = env.reset()
         print(state)
         # steps = 0

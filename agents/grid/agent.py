@@ -4,7 +4,7 @@ import os
 import sys
 import time
 
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Tuple, Union
 
 import numpy as np
 
@@ -20,14 +20,14 @@ class GridAgent(ModelFreeAgent):
         q_val, action = self.get_qval_action(state)
         return action
 
-    def get_qval_action(self, state: int) -> int:
+    def get_qval_action(self, state: Union[int, np.ndarray]) -> int:
         qvals = self.model.predict(state)
         return self.policy.get_action(qvals)
 
     def update_model(self, update: Any):
         self.model.update(update)
 
-    def q_grad(self, state: int, action: int) -> np.ndarray:
+    def q_grad(self, state: Union[int, np.ndarray], action: int) -> np.ndarray:
         return self.model.grad(state, action)
 
     def explore_policy(self):
@@ -37,29 +37,9 @@ class GridAgent(ModelFreeAgent):
     def vec_shape(self):
         return self.model.vec_shape
 
-    @staticmethod
-    def _print_path_grid(path_grid: List[List[str]]):
-        col = len(path_grid[0])
-        print("\n")
-        print(".___" * col + ".")
-        for row in path_grid:
-            print("| " + " | ".join(row) + " |")
-            print("|___" * col + "|")
-
-    @staticmethod
-    def _get_path_grid(grid: List[List[str]]) -> List[List[str]]:
-        path_grid = []
-        for row in grid:
-            path_row = []
-            for item in row:
-                if item == "t":
-                    path_row.append("*")
-                elif item == "x":
-                    path_row.append("x")
-                else:
-                    path_row.append("-")
-            path_grid.append(path_row)
-        return path_grid
+    @property
+    def n_features(self):
+        return self.env.observation_space.n
 
     @classmethod
     def _read_wind(cls, grid_size: Tuple[int, int], **kwargs

@@ -90,4 +90,6 @@ class SarsaLambda(Sarsa):
             cum_reward += reward
             if done:
                 break
+        print(alpha)
+        input("just checking...")
         return cum_reward

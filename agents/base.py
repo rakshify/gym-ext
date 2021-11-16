@@ -15,14 +15,16 @@ class Agent(object):
     """This is the base class for all agents."""
     name = ""
 
-    def __init__(self, policy: str, verbose: bool = False):
+    def __init__(self, env: Env, policy: str, verbose: bool = False):
         """
         Initialize the base agent.
 
         Args:
+            env(Env): Environment for this agent
             policy (str): The policy to use.
             verbose (bool): Whether to print out information.
         """
+        self.env = env
         self.policy_name = policy
         self.policy = get_policy_by_name(policy)()
         self.verbose = verbose
@@ -39,25 +41,23 @@ class Agent(object):
         """
         raise NotImplementedError("Base agent can not decide action to take")
 
-    def train(self, env: Env, algorithm: Algorithm,
-              discount_factor: float = 1.0, num_episodes: int = 10000,
-              **kwargs):
+    def train(self, algorithm: Algorithm, discount_factor: float = 1.0,
+              num_episodes: int = 10000, **kwargs):
         """
         Train the agent.
 
         Args:
-            env (Env): The environment to train on.
             algorithm (Algorithm): The algorithm to use.
             discount_factor (float): The discount factor.
             num_episodes (int): The number of episodes to train for.
             **kwargs: Additional arguments.
         """
         start = time.time()
-        self.model.init_vars(env.observation_space.n, env.action_space.n)
+        self.model.init_vars(self.n_features, self.env.action_space.n)
         for i in range(num_episodes):
             st = time.time()
             self.policy.exploit()
-            algorithm.solve_episode(env, self, discount_factor)
+            algorithm.solve_episode(self.env, self, discount_factor)
             msg = (f"Finished episode {i} in "
                 f"{int((time.time() - st) * 100000) / 100}ms.")
             print(msg)
@@ -71,9 +71,9 @@ class Agent(object):
         return metadata
 
     @classmethod
-    def load_from_meta(cls, metadata: Dict[str, Any]) -> "Agent":
+    def load_from_meta(cls, metadata: Dict[str, Any], env: Env) -> "Agent":
         policy = metadata["policy"]
-        agent = cls(policy["name"])
+        agent = cls(env, policy["name"])
         agent.policy.load_vars(policy)
         return agent
 
@@ -82,16 +82,18 @@ class ModelFreeAgent(Agent):
     """This is the base class for all model-free agents."""
     name = ""
 
-    def __init__(self, policy: str, model: str, verbose: bool = False):
+    def __init__(self, env: Env, policy: str, model: str,
+                 verbose: bool = False):
         """
         Initialize the base agent.
 
         Args:
+            env(Env): Environment for this agent
             policy (str): The policy to use.
             model (str): The model to use.
             verbose (bool): Whether to print out information.
         """
-        super(ModelFreeAgent, self).__init__(policy, verbose)
+        super(ModelFreeAgent, self).__init__(env, policy, verbose)
         self.model_name = model
         self.model = get_model_by_name(model)()
 
@@ -109,10 +111,11 @@ class ModelFreeAgent(Agent):
         return metadata
 
     @classmethod
-    def load_from_meta(cls, metadata: Dict[str, Any]) -> "ModelFreeAgent":
+    def load_from_meta(cls, metadata: Dict[str, Any], env: Env
+                       ) -> "ModelFreeAgent":
         policy = metadata["policy"]
         model = metadata["model"]
-        agent = cls(policy["name"], model["name"])
+        agent = cls(env, policy["name"], model["name"])
         agent.policy.load_vars(policy)
         agent.model.load_vars(model["vars"])
         return agent

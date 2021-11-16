@@ -12,6 +12,27 @@ class GridRead:
             sys.exit(1)
 
     @classmethod
+    def read_target_states(cls, row: int, col: int, tries: int,
+                           max_tries: int = 3, read_float: bool = False
+                           ) -> List[Tuple[int, int]]:
+        cls._base_condition(tries, max_tries)
+
+        ip = input("Enter number of target states").strip()
+        try:
+            nt = int(ip)
+            if nt <= 0:
+                raise ValueError
+        except ValueError:
+            print("Number of target states has to be a positive integer")
+            cls.read_target_states(tries + 1, max_tries)
+        targets = []
+        for _ in range(nt):
+            state = cls.read_start_state(
+                row, col, tries, max_tries, read_float)
+            targets.append(state)
+        return targets
+
+    @classmethod
     def read_grid_size(cls, tries: int, max_tries: int = 3) -> Tuple[int, int]:
         cls._base_condition(tries, max_tries)
 
@@ -58,7 +79,8 @@ class GridRead:
 
     @classmethod
     def read_start_state(cls, row: int, col: int, tries: int,
-                         max_tries: int = 3) -> Tuple[int, int]:
+                         max_tries: int = 3, read_float: bool = False
+                         ) -> Tuple[int, int]:
         cls._base_condition(tries, max_tries)
 
         text = "Enter the start state, in space separated \"row col\" format."
@@ -71,7 +93,7 @@ class GridRead:
         for i in ip:
             j += 1
             try:
-                item = int(i.strip())
+                item = float(i.strip()) if read_float else int(i.strip())
                 if item < 0 or (j == 1 and item >= row) or \
                         (j == 2 and item >= col):
                     print(("State index should be valid from (0 0) to "
