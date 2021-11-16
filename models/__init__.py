@@ -1,7 +1,8 @@
 from models.model import Model
+from models.linear import Linear
 from models.table_lookup import TableLookup
 
-_ALL_MODELS = [TableLookup]
+_ALL_MODELS = [Linear, TableLookup]
 _REGISTERED_MODELS = {m.name: m for m in _ALL_MODELS}
 
 

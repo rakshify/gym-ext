@@ -1,4 +1,4 @@
-"""This implements a lookup table kind of the model."""
+"""This implements a linear model with a single weight vector."""
 
 import os
 
@@ -9,31 +9,32 @@ import numpy as np
 from models.model import Model
 
 
-class TableLookup(Model):
-    """This implements a lookup table kind of the model."""
-    name = 'table_lookup'
-    
+class Linear(Model):
+    """This implements a linear model with a single weight vector."""
+    name = 'linear'
+
     def init_vars(self, num_features: int, nA: int, **kwargs):
         """
-        Initialize the model's variables.
+        Initialize the weight vector.
 
         Args:
             num_features: Number of features.
             nA: Number of actions.
+            kwargs: Additional arguments.
         """
-        self.q_vals = np.zeros((nS, nA))
+        self.w = np.zeros((nA, num_features))
 
-    def predict(self, state: int):
+    def predict(self, state: np.ndarray) -> np.ndarray:
         """
-        Predict the Q-values for a given state.
+        Predict the Q-values for the given state.
 
         Args:
-            state: The state.
+            state: State.
 
         Returns:
-            The Q-values for the given state.
+            Q-values for the given state.
         """
-        return self.q_vals[state, :]
+        return np.dot(self.w, state)
 
     def update(self, update: np.ndarray, **kwargs):
         """
@@ -43,9 +44,9 @@ class TableLookup(Model):
             update: The update.
             kwargs: Additional arguments.
         """
-        self.q_vals += update
+        self.w += update
 
-    def grad(self, state: int, action: int) -> np.ndarray:
+    def grad(self, state: np.ndarray, action: int) -> np.ndarray:
         """
         Compute the gradient of the model's output with respect to the
         model's variables.
@@ -58,14 +59,14 @@ class TableLookup(Model):
             The gradient of the model's output with respect to the model's
             variables.
         """
-        gradient = np.zeros(self.q_vals.shape)
-        gradient[state, action] = 1
+        gradient = np.zeros(self.w.shape)
+        gradient[action, :] = state
         return gradient
 
     @property
     def vec_shape(self):
         """Model vector shape."""
-        return self.q_vals.shape
+        return self.w.shape
 
     def save_vars(self, model_dir: str) -> Dict[str, str]:
         """
@@ -77,8 +78,8 @@ class TableLookup(Model):
         Returns:
             A dictionary containing the model's variables.
         """
-        vars = {"qvals": os.path.join(model_dir, "qvals.npy")}
-        np.save(vars["qvals"], self.q_vals)
+        vars = {"w": os.path.join(model_dir, "w.npy")}
+        np.save(vars["w"], self.w)
         return vars
 
     def load_vars(self, vars: Dict[str, str]):
@@ -88,4 +89,4 @@ class TableLookup(Model):
         Args:
             vars: A dictionary containing the model's variables.
         """
-        self.q_vals = np.load(vars["qvals"])
+        self.w = np.load(vars["w"])

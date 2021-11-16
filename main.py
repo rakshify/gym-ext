@@ -29,9 +29,9 @@ def solve_env(env_name: str, step: str, model_dir: str):
     """Solve the environment."""
     if step == "train":
         env = gym.make(env_name)
-        agent = get_agent_by_name(env_name.split("-v")[0])(
-            policy="greedy", model="table_lookup")
-        algorithm = get_algorithm_by_name("sarsa_lambda")()
+        agent = get_agent_by_name("GridWorld")(
+            policy="greedy", model="linear")
+        algorithm = get_algorithm_by_name("sarsa")()
         agent.train(env, algorithm)
         metadata = env.update_metadata(metadata={"model_dir": model_dir})
         metadata = agent.update_metadata(metadata=metadata)
