@@ -24,9 +24,18 @@ class GridAgent(ModelFreeAgent):
         qvals = self.model.predict(state)
         return self.policy.get_action(qvals)
 
-    def update_model(self, update: Any, step_size: float, state: int,
-                     action: int):
-        self.model.update(update * step_size, state, action)
+    def update_model(self, update: Any):
+        self.model.update(update)
+
+    def q_grad(self, state: int, action: int) -> np.ndarray:
+        return self.model.grad(state, action)
+
+    def explore_policy(self):
+        self.policy.explore()
+
+    @property
+    def vec_shape(self):
+        return self.model.vec_shape
 
     @staticmethod
     def _print_path_grid(path_grid: List[List[str]]):

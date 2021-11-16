@@ -19,7 +19,9 @@ class TableLookup(Model):
     def predict(self, state: int):
         return self.q_vals[state, :]
 
-    def update(self, update: Union[np.ndarray, float], si: int, ai: int):
+    def update(self, update: Union[np.ndarray, float], **kwargs):
+        si = kwargs.get("state")
+        ai = kwargs.get("action")
         if si is None:
             if ai is None:
                 self.q_vals += update
@@ -30,6 +32,15 @@ class TableLookup(Model):
                 self.q_vals[si, :] += update
             else:
                 self.q_vals[si, ai] += update
+
+    def grad(self, state: int, action: int) -> np.ndarray:
+        gradient = np.zeros(self.q_vals.shape)
+        gradient[state, action] = 1
+        return gradient
+
+    @property
+    def vec_shape(self):
+        return self.q_vals.shape
 
     def save_vars(self, model_dir: str) -> Dict[str, str]:
         qvals_file = os.path.join(model_dir, "qvals.npy")

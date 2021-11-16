@@ -8,15 +8,13 @@ class Algorithm(object):
     
     name = ""
 
-    def solve_episode(self, env: Env, agent: "Agent", episode: int,
-                      df: float) -> float:
+    def solve_episode(self, env: Env, agent: "Agent", df: float) -> float:
         """
         Solve a single episode using the algorithm.
 
         Args:
             env: The environment to solve.
             agent: Agent to solve the environment.
-            episode: The episode number.
             df: The discount factor to use.
 
         Returns:

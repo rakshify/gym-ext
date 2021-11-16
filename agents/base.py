@@ -55,9 +55,13 @@ class Agent(object):
         start = time.time()
         self.model.init_vars(env.observation_space.n, env.action_space.n)
         for i in range(num_episodes):
-            eps = 1 / (i + 1)
-            self.policy.update_policy(eps)
-            algorithm.solve_episode(env, self, i, discount_factor)
+            st = time.time()
+            self.policy.exploit()
+            algorithm.solve_episode(env, self, discount_factor)
+            msg = (f"Finished episode {i} in "
+                f"{int((time.time() - st) * 100000) / 100}ms.")
+            print(msg)
+        print(f"Model trained in {int((time.time() - start) * 100) / 100}sec.")
 
     def update_metadata(self, metadata: Dict[str, Any]):
         metadata["agent"] = {
