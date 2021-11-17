@@ -30,29 +30,32 @@ def solve_env(env_name: str, step: str, model_dir: str):
     if step == "train":
         env = gym.make(env_name)
         agent = get_agent_by_name("ContGridWorld")(
-            env, policy="greedy", model="linear")
+            env, policy="greedy", model="ridge")
         algorithm = get_algorithm_by_name("sarsa_lambda")()
-        agent.train(algorithm)
+        agent.train(algorithm, num_episodes=10000)
         metadata = env.update_metadata(metadata={"model_dir": model_dir})
         metadata = agent.update_metadata(metadata=metadata)
+        # metadata = agent.update_metadata(metadata={"model_dir": model_dir})
         with open(os.path.join(model_dir, "metadata.json"), "w") as f:
             json.dump(metadata, f)
     elif step == "predict":
         with open(os.path.join(model_dir, "metadata.json")) as f:
             metadata = json.load(f)
         env = load_env(metadata)
+        # env = gym.make(env_name)
         agent = load_agent(metadata, env)
         state = env.reset()
         print(state)
-        # steps = 0
+        steps = 0
         while True:
-            # steps += 1
+            steps += 1
             action = agent.get_action(state)
             state, reward, done, info = env.step(action)
             env.render()
             # if done or steps > 10:
             if done:
                 break
+        print(steps)
 
 
 def main():

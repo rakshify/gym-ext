@@ -15,27 +15,6 @@ from gym_ext.envs import Env
 
 class GridAgent(ModelFreeAgent):
     name = "GridWorld"
-    
-    def get_action(self, state: int) -> int:
-        q_val, action = self.get_qval_action(state)
-        return action
-
-    def get_qval_action(self, state: Union[int, np.ndarray]) -> int:
-        qvals = self.model.predict(state)
-        return self.policy.get_action(qvals)
-
-    def update_model(self, update: Any):
-        self.model.update(update)
-
-    def q_grad(self, state: Union[int, np.ndarray], action: int) -> np.ndarray:
-        return self.model.grad(state, action)
-
-    def explore_policy(self):
-        self.policy.explore()
-
-    @property
-    def vec_shape(self):
-        return self.model.vec_shape
 
     @property
     def n_features(self):

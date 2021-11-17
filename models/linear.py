@@ -13,7 +13,7 @@ class Linear(Model):
     """This implements a linear model with a single weight vector."""
     name = 'linear'
 
-    def init_vars(self, num_features: int, nA: int, **kwargs):
+    def init_vars(self, num_features: int=None, nA: int=None, **kwargs):
         """
         Initialize the weight vector.
 
@@ -45,6 +45,8 @@ class Linear(Model):
             kwargs: Additional arguments.
         """
         self.w += update
+        # print(self.w)
+        # print("+" * 80)
 
     def grad(self, state: np.ndarray, action: int) -> np.ndarray:
         """

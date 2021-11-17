@@ -55,7 +55,7 @@ class ContGridEnv(GridEnv):
         """Initialize a ContGridEnv."""
         self.action_space = spaces.Discrete(4)
         self.action_effect = 0.2
-        self.reach_threshold = 1.0
+        self.reach_threshold = 0.1
         self.steps_beyond_done = None
         self.elapsed_steps = None
         if grid_size is None:
@@ -86,10 +86,10 @@ class ContGridEnv(GridEnv):
         y_pos = self.state[1]
         x_vel = self.state[2]
         y_vel = self.state[3]
-        ACTIONS = ["up", "down", "left", "right"]
-        print(f"Current position is: ({x_pos}, {y_pos}).")
-        print(f"Current velocity is: ({x_vel}, {y_vel}).")
-        print(f"Taking action {ACTIONS[action]}")
+        # ACTIONS = ["up", "down", "left", "right"]
+        # print(f"Current position is: ({x_pos}, {y_pos}).")
+        # print(f"Current velocity is: ({x_vel}, {y_vel}).")
+        # print(f"Taking action {ACTIONS[action]}")
         minx = self.observation_space.low[0]
         miny = self.observation_space.low[1]
         maxx = self.observation_space.high[0]
@@ -98,30 +98,34 @@ class ContGridEnv(GridEnv):
         ny_vel = y_vel
 
         if self.target_achieved(self.state[:2]):
-            print("Box is in vicinity of one of the targets1.")
-            input("+" * 80)
+            # print("Box is in vicinity of one of the targets1.")
+            # input("+" * 80)
             state = self.state
         else:
             # Up action
             if action == 0:
                 ny_vel -= self.action_effect
+                ny_vel = max(ny_vel, miny - y_pos)
             # Down action
             elif action == 1:
                 ny_vel += self.action_effect
+                ny_vel = min(ny_vel, maxy - y_pos)
             # Up action
             elif action == 2:
                 nx_vel -= self.action_effect
+                nx_vel = max(nx_vel, minx - x_pos)
             # Down action
             else:
                 nx_vel += self.action_effect
+                nx_vel = min(nx_vel, maxx - x_pos)
             nx_pos = x_pos + nx_vel
             ny_pos = y_pos + ny_vel
-            print(f"New velocity is: ({nx_vel}, {ny_vel}).")
+            # print(f"New velocity is: ({nx_vel}, {ny_vel}).")
             # Can't go past boundaries
             nx_pos = min(maxx, max(minx, nx_pos))
             ny_pos = min(maxy, max(miny, ny_pos))
-            print(f"New position is: ({nx_pos}, {ny_pos}).")
-            print("+" * 80)
+            # print(f"New position is: ({nx_pos}, {ny_pos}).")
+            # print("+" * 80)
             # input("+" * 80)
             state = np.array([nx_pos, ny_pos, nx_vel, ny_vel])
             
@@ -132,8 +136,8 @@ class ContGridEnv(GridEnv):
         if not done:
             reward = -1.0
         elif self.steps_beyond_done is None:
-            print("Box is in vicinity of one of the targets.")
-            input("+" * 80)
+            # print("Box is in vicinity of one of the targets.")
+            # input("+" * 80)
             # Reached target state
             self.steps_beyond_done = 0
             reward = 0.0
@@ -170,6 +174,7 @@ class ContGridEnv(GridEnv):
             state = self.np_random.uniform(low=0, high=0.1, size=(4,))
             if not self.target_achieved(state[:2]):
                 self.elapsed_steps = 0
+                self.steps_beyond_done = None
                 self.state = state
                 return self.state
 
