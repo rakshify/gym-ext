@@ -5,6 +5,7 @@ import os
 from typing import Dict
 
 import numpy as np
+from tensorflow import keras
 
 from models.model import Model
 
@@ -26,7 +27,8 @@ class DQN(Model):
         self.nn.compile(loss='mse', optimizer=keras.optimizers.Adam())
 
     def train(self, x: np.ndarray, y: np.ndarray):
-        self.nn.train(x, y)
+        self.nn.train_on_batch(x, y)
+        # self.nn.fit(x, y, batch_size=64, epochs=20)
 
     def predict(self, state: np.ndarray) -> np.ndarray:
         """
@@ -38,7 +40,19 @@ class DQN(Model):
         Returns:
             Q-values for the given state.
         """
-        return self.nn.predict(state)
+        # try:
+        #     return self.nn.predict(state)
+        # except:
+        #     return self.nn.predict().flatten()
+        # print(state.shape)
+        state = state.reshape(1, state.shape[0])
+        # print(state.shape)
+        out = self.nn.predict(state)
+        # print(out.shape)
+        return out.flatten()
+
+    def update_weights_from_model(self, model: "DQN"):
+        self.nn.set_weights(model.nn.get_weights())
 
     def save_vars(self, model_dir: str) -> Dict[str, str]:
         """

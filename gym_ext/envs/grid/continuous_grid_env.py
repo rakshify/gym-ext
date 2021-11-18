@@ -82,20 +82,23 @@ class ContGridEnv(GridEnv):
         err_msg = "Cannot call env.step() before calling reset()"
         assert self.elapsed_steps is not None, err_msg
 
-        x_pos = self.state[0]
-        y_pos = self.state[1]
-        x_vel = self.state[2]
-        y_vel = self.state[3]
+        # x_pos = self.state[0]
+        # y_pos = self.state[1]
+        pos = self.state[:2]
+        vel = self.state[2:]
+        # x_vel = self.state[2]
+        # y_vel = self.state[3]
         # ACTIONS = ["up", "down", "left", "right"]
-        # print(f"Current position is: ({x_pos}, {y_pos}).")
-        # print(f"Current velocity is: ({x_vel}, {y_vel}).")
+        # print(f"Current position is: ({pos}).")
+        # print(f"Current velocity is: ({vel}).")
         # print(f"Taking action {ACTIONS[action]}")
         minx = self.observation_space.low[0]
         miny = self.observation_space.low[1]
         maxx = self.observation_space.high[0]
         maxy = self.observation_space.high[1]
-        nx_vel = x_vel
-        ny_vel = y_vel
+        # nx_vel = x_vel
+        # ny_vel = y_vel
+        # nvel = vel
 
         if self.target_achieved(self.state[:2]):
             # print("Box is in vicinity of one of the targets1.")
@@ -104,30 +107,43 @@ class ContGridEnv(GridEnv):
         else:
             # Up action
             if action == 0:
-                ny_vel -= self.action_effect
-                ny_vel = max(ny_vel, miny - y_pos)
+                shift = np.array([0, -self.action_effect])
+                # nvel[1] -= self.action_effect
+                # nvel[1] = max(nvel[1], miny - pos[1])
             # Down action
             elif action == 1:
-                ny_vel += self.action_effect
-                ny_vel = min(ny_vel, maxy - y_pos)
+                shift = np.array([0, self.action_effect])
+                # ny_vel += self.action_effect
+                # ny_vel = min(ny_vel, maxy - y_pos)
             # Up action
             elif action == 2:
-                nx_vel -= self.action_effect
-                nx_vel = max(nx_vel, minx - x_pos)
+                shift = np.array([-self.action_effect, 0])
+                # nx_vel -= self.action_effect
+                # nx_vel = max(nx_vel, minx - x_pos)
             # Down action
             else:
-                nx_vel += self.action_effect
-                nx_vel = min(nx_vel, maxx - x_pos)
-            nx_pos = x_pos + nx_vel
-            ny_pos = y_pos + ny_vel
-            # print(f"New velocity is: ({nx_vel}, {ny_vel}).")
+                shift = np.array([self.action_effect, 0])
+                # nx_vel += self.action_effect
+                # nx_vel = min(nx_vel, maxx - x_pos)
+            nvel = vel + shift
+            norm = np.linalg.norm(nvel)
+            if norm > 1:
+                nvel = nvel / norm
+            nvel[0] = min(max(nvel[0], minx - pos[0]), maxx - pos[0])
+            nvel[1] = min(max(nvel[1], miny - pos[1]), maxy - pos[1])
+            npos = pos + nvel
+            # nx_pos = x_pos + nx_vel
+            # ny_pos = y_pos + ny_vel
             # Can't go past boundaries
-            nx_pos = min(maxx, max(minx, nx_pos))
-            ny_pos = min(maxy, max(miny, ny_pos))
-            # print(f"New position is: ({nx_pos}, {ny_pos}).")
-            # print("+" * 80)
+            # nx_pos = min(maxx, max(minx, nx_pos))
+            # ny_pos = min(maxy, max(miny, ny_pos))
+            # npos[0] = min(maxx, max(minx, npos[0]))
+            # npos[1] = min(maxy, max(miny, npos[1]))
             # input("+" * 80)
-            state = np.array([nx_pos, ny_pos, nx_vel, ny_vel])
+            state = np.array([npos[0], npos[1], nvel[0], nvel[1]])
+            # print(f"New velocity is: ({nvel}).")
+            # print(f"New position is: ({npos}).")
+            # print("+" * 80)
             
         # # Action not allowed if results in blocked state
         # if self.states[nsi] == "x":
@@ -177,20 +193,6 @@ class ContGridEnv(GridEnv):
                 self.steps_beyond_done = None
                 self.state = state
                 return self.state
-
-    def render(self, mode: str = "human") -> None:
-        """
-        Render the environment.
-
-        Args:
-            mode: Rendering mode.
-        """
-        if mode == "human":
-            print("\n")
-            print(".___" * self.cols + ".")
-            for row in self.path_grid:
-                print("| " + " | ".join(row) + " |")
-                print("|___" * self.cols + "|")
 
     def read_grid_size(self):
         """Read the grid size from CLI."""

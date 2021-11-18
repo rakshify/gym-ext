@@ -11,19 +11,21 @@ class Greedy(Policy):
     """This implements greedy policy."""
     name = 'greedy'
     
-    def __init__(self, epsilon: float = 0.99, decay: float = 0.99):
+    def __init__(self, epsilon: float = 0.99, decay: float = 0.99, min_eps: float = 0.01):
         self.epsilon = epsilon
         self.decay = decay
+        self.min_eps = min_eps
 
     def get_action(self, values: List[float]) -> Tuple[float, int]:
-        if np.random.rand() < self.epsilon:
-            action = np.random.choice(len(values))
-        else:
+        if np.random.rand() > self.epsilon:
             action = np.argmax(values)
-        return values[action], action
+        else:
+            action = np.random.choice(len(values))
+        return values, action
 
     def exploit(self, **kwargs):
         self.epsilon *= self.decay
+        self.epsilon = max(self.min_eps, self.epsilon)
 
     def explore(self, **kwargs):
         self.epsilon = min(0.99, self.epsilon / self.decay)

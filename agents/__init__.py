@@ -1,11 +1,11 @@
 from typing import Any, Dict
 
 from agents.base import Agent
-from agents.grid import GridAgent, ContGridAgent
+from agents.grid import GridAgent, ContGridAgent, DQNGridAgent
 from gym_ext.envs import Env
 
 
-_ALL_AGENTS = [GridAgent, ContGridAgent]
+_ALL_AGENTS = [GridAgent, ContGridAgent, DQNGridAgent]
 _REGISTERED_AGENTS = {a.name: a for a in _ALL_AGENTS}
 
 

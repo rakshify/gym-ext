@@ -70,7 +70,8 @@ class SarsaLambda(Sarsa):
             The total reward for the episode.
         """
         state = env.reset()
-        qval, action = agent.get_qval_action(state)
+        qvals, action = agent.get_qval_action(state)
+        qval = qvals[action]
         alpha = 0
         # sepsilon = 0
         cum_reward = 0
@@ -81,7 +82,8 @@ class SarsaLambda(Sarsa):
                 # sepsilon += 1
                 agent.explore_policy()
             state_, reward, done, _ = env.step(action)
-            next_qval, action_ = agent.get_qval_action(state_)
+            next_qvals, action_ = agent.get_qval_action(state_)
+            next_qval = next_qvals[action_]
             update = reward + df * next_qval - qval
             grad = agent.q_grad(state, action)
             elig_traces = df * self.lamda * elig_traces + grad

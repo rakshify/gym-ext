@@ -29,8 +29,11 @@ def solve_env(env_name: str, step: str, model_dir: str):
     """Solve the environment."""
     if step == "train":
         env = gym.make(env_name)
+        # agent = get_agent_by_name("DQNGrid")(
+        #     env, policy="greedy")
+        # agent.train(num_episodes=100000)
         agent = get_agent_by_name("ContGridWorld")(
-            env, policy="greedy", model="ridge")
+            env, model="linear", policy="greedy")
         algorithm = get_algorithm_by_name("sarsa_lambda")()
         agent.train(algorithm, num_episodes=10000)
         metadata = env.update_metadata(metadata={"model_dir": model_dir})
