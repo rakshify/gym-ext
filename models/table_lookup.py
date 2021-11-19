@@ -1,4 +1,4 @@
-"""This implements a lookup table kind of the model."""
+"""Implements a lookup table kind of the model."""
 
 import os
 
@@ -10,9 +10,10 @@ from models.model import Model
 
 
 class TableLookup(Model):
-    """This implements a lookup table kind of the model."""
+    """Implements a lookup table kind of the model."""
+
     name = 'table_lookup'
-    
+
     def init_vars(self, num_features: int, nA: int, **kwargs):
         """
         Initialize the model's variables.
@@ -20,10 +21,11 @@ class TableLookup(Model):
         Args:
             num_features: Number of features.
             nA: Number of actions.
+            kwargs: Additional arguments.
         """
-        self.q_vals = np.zeros((nS, nA))
+        self.q_vals = np.zeros((num_features, nA))
 
-    def predict(self, state: int):
+    def predict(self, state: int) -> np.ndarray:
         """
         Predict the Q-values for a given state.
 
@@ -47,8 +49,7 @@ class TableLookup(Model):
 
     def grad(self, state: int, action: int) -> np.ndarray:
         """
-        Compute the gradient of the model's output with respect to the
-        model's variables.
+        Compute the gradient of the model's output wrt the model's variables.
 
         Args:
             state: The state.
@@ -70,7 +71,7 @@ class TableLookup(Model):
     def save_vars(self, model_dir: str) -> Dict[str, str]:
         """
         Save the model's variables.
-            
+
         Args:
             model_dir: The model directory.
 

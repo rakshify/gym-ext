@@ -7,11 +7,13 @@ import gym
 
 from gym_ext.envs import _ALL_ENVS, load_env
 
+
 for env in _ALL_ENVS:
     gym.envs.registration.register(
         id=f'{env.name}-{env.version}',
         entry_point=env.entry_point,
     )
+
 
 base_dir = os.path.abspath(os.path.dirname(__file__))
 pkg_file = os.path.join(base_dir, "package_info.json")
@@ -21,3 +23,11 @@ with open(pkg_file) as f:
 __version__ = pkg_info["version"]
 __author__ = pkg_info["author"]
 __credits__ = pkg_info["credits"]
+
+
+__all__ = [
+    'load_env',
+    '__version__',
+    '__author__',
+    '__credits__'
+]

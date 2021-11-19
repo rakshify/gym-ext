@@ -1,4 +1,4 @@
-"""This implements a linear model with a single weight vector."""
+"""Implements a linear model with a single weight vector."""
 
 import os
 
@@ -10,10 +10,11 @@ from models.model import Model
 
 
 class Linear(Model):
-    """This implements a linear model with a single weight vector."""
+    """Implements a linear model with a single weight vector."""
+
     name = 'linear'
 
-    def init_vars(self, num_features: int=None, nA: int=None, **kwargs):
+    def init_vars(self, num_features: int = None, nA: int = None, **kwargs):
         """
         Initialize the weight vector.
 
@@ -50,8 +51,7 @@ class Linear(Model):
 
     def grad(self, state: np.ndarray, action: int) -> np.ndarray:
         """
-        Compute the gradient of the model's output with respect to the
-        model's variables.
+        Compute the gradient of the model's output wrt the model's variables.
 
         Args:
             state: The state.
@@ -73,7 +73,7 @@ class Linear(Model):
     def save_vars(self, model_dir: str) -> Dict[str, str]:
         """
         Save the model's variables.
-            
+
         Args:
             model_dir: The model directory.
 

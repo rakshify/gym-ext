@@ -1,16 +1,10 @@
 """Implements the one-hot grid environment."""
 
-import json
-import os
+from typing import Tuple
 
-from typing import Any, Dict, List, Tuple
-
-# import gym
-from gym import spaces
 import numpy as np
 
 from gym_ext.envs.grid.grid_env import GridEnv
-from gym_ext.envs.grid.utils import GridRead
 
 
 class OneHotGridEnv(GridEnv):
@@ -90,7 +84,7 @@ class OneHotGridEnv(GridEnv):
         """Start a new episode by sampling a new state."""
         # blocked or target states not allowed to be sampled
         allowed_states = [i for i, st in enumerate(self.states)
-        if st not in ("x", "t")]
+                          if st not in ("x", "t")]
         si = np.random.choice(allowed_states)
         self.state = np.zeros(self.observation_space.n)
         self.state[si] = 1

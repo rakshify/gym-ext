@@ -8,7 +8,7 @@ with open('requirements.txt') as f:
     requirements = f.read().splitlines()
 with open("gym_ext/package_info.json") as f:
     pkg_info = json.load(f)
-    
+
 setuptools.setup(
     name=pkg_info["name"],
     include_package_data=True,

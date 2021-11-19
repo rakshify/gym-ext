@@ -1,17 +1,17 @@
-import time
+"""Implements the SARSA algorithm."""
 
 import numpy as np
-
-# from matplotlib import pyplot as plt
 
 from gym_ext.envs import Env
 from algorithms.algorithm import Algorithm
 
 
 class Sarsa(Algorithm):
+    """Implements the SARSA algorithm."""
+
     name = "sarsa"
 
-    def solve_episode(self, env: Env, agent: "Agent", df: float) -> float:
+    def solve_episode(self, env: Env, agent, df: float) -> float:
         """
         Solve a single episode using the SARSA algorithm.
 
@@ -30,9 +30,7 @@ class Sarsa(Algorithm):
         while True:
             alpha += 1
             if alpha % 10000 == 0:
-                print(f"Changing epsilon from {agent.policy.epsilon}")
                 agent.explore_policy()
-                print(f"Alpha = {alpha}...Changed epsilon to {agent.policy.epsilon}")
             state_, reward, done, _ = env.step(action)
             next_qval, action_ = agent.get_qval_action(state_)
             update = reward + df * next_qval - qval
@@ -46,6 +44,8 @@ class Sarsa(Algorithm):
 
 
 class SarsaLambda(Sarsa):
+    """Implements the SARSA-lambda algorithm."""
+
     name = "sarsa_lambda"
 
     def __init__(self, lamda: float = 0.7):
@@ -57,7 +57,7 @@ class SarsaLambda(Sarsa):
         """
         self.lamda = lamda
 
-    def solve_episode(self, env: Env, agent: "Agent", df: float) -> float:
+    def solve_episode(self, env: Env, agent, df: float) -> float:
         """
         Solve a single episode using the SARSA lambda algorithm.
 

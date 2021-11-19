@@ -98,7 +98,7 @@ class GridEnv(Env):
         """Start a new episode by sampling a new state."""
         # blocked or target states not allowed to be sampled
         allowed_states = [i for i, st in enumerate(self.states)
-        if st not in ("x", "t")]
+                          if st not in ("x", "t")]
         self.state = np.random.choice(allowed_states)
         self.elapsed_steps = 0
         return self.state

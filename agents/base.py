@@ -1,4 +1,4 @@
-"""This implements the base class for all agents."""
+"""Implements the base class for all agents."""
 
 import os
 import random
@@ -15,7 +15,8 @@ from policies import get_policy_by_name
 
 
 class Agent(object):
-    """This is the base class for all agents."""
+    """Base class for all agents."""
+
     name = ""
 
     def __init__(self, env: Env, policy: str, verbose: bool = False):
@@ -45,21 +46,50 @@ class Agent(object):
         q_val, action = self.get_qval_action(state)
         return action
 
-    def get_qval_action(self, state: Union[int, np.ndarray]) -> Tuple[np.ndarray, int]:
+    def get_qval_action(self, state: Union[int, np.ndarray]
+                        ) -> Tuple[np.ndarray, int]:
+        """
+        Get the q-value and action for a state.
+
+        Args:
+            state (Union[int, np.ndarray]): The state to get the q-value
+                                            and action for.
+
+        Returns:
+            Tuple[np.ndarray, int]: The q-value and action.
+        """
         qvals = self.model.predict(state)
-        return self.policy.get_action(qvals)
+        return qvals, self.policy.get_action(qvals)
 
     def update_model(self, update: Any):
+        """
+        Update the model.
+
+        Args:
+            update (Any): The update to apply.
+        """
         self.model.update(update)
 
     def q_grad(self, state: Union[int, np.ndarray], action: int) -> np.ndarray:
+        """
+        Get the gradient of the q-value for a state and action.
+
+        Args:
+            state (Union[int, np.ndarray]): The state to get the gradient for.
+            action (int): The action to get the gradient for.
+
+        Returns:
+            np.ndarray: The gradient of the q-value for the state and action.
+        """
         return self.model.grad(state, action)
 
     def explore_policy(self):
+        """Explore the policy."""
         self.policy.explore()
 
     @property
     def vec_shape(self):
+        """Get the shape of the model weights."""
         return self.model.vec_shape
 
     def train(self, algorithm: Algorithm, discount_factor: float = 1.0,
@@ -82,14 +112,20 @@ class Agent(object):
             episode_rewards.append(er)
             self.policy.exploit()
             msg = (f"Finished episode {i} in "
-                f"{int((time.time() - st) * 100000) / 100}ms "
-                f"with reward = {er}.")
+                   f"{int((time.time() - st) * 100000) / 100}ms "
+                   f"with reward = {er}.")
             print(msg)
         # print(self.model.w)
         # print("+" * 80)
         print(f"Model trained in {int((time.time() - start) * 100) / 100}sec.")
 
     def update_metadata(self, metadata: Dict[str, Any]):
+        """
+        Update the metadata.
+
+        Args:
+            metadata (Dict[str, Any]): The metadata to update.
+        """
         metadata["agent"] = {
             "name": self.name,
             "policy": self.policy.serialize()
@@ -98,6 +134,16 @@ class Agent(object):
 
     @classmethod
     def load_from_meta(cls, metadata: Dict[str, Any], env: Env) -> "Agent":
+        """
+        Load the agent from metadata.
+
+        Args:
+            metadata (Dict[str, Any]): The metadata to load from.
+            env (Env): The environment to use.
+
+        Returns:
+            Agent: The loaded agent.
+        """
         policy = metadata["policy"]
         agent = cls(env, policy["name"])
         agent.policy.load_vars(policy)
@@ -105,7 +151,8 @@ class Agent(object):
 
 
 class ModelFreeAgent(Agent):
-    """This is the base class for all model-free agents."""
+    """Base class for all model-free agents."""
+
     name = ""
 
     def __init__(self, env: Env, policy: str, model: str,
@@ -125,6 +172,12 @@ class ModelFreeAgent(Agent):
             self.model = get_model_by_name(model)()
 
     def update_metadata(self, metadata: Dict[str, Any]):
+        """
+        Update the metadata.
+
+        Args:
+            metadata (Dict[str, Any]): The metadata to update.
+        """
         metadata = super(ModelFreeAgent, self).update_metadata(metadata)
         meta = self.model.serialize()
         model_dir = metadata.get("model_dir")
@@ -140,6 +193,16 @@ class ModelFreeAgent(Agent):
     @classmethod
     def load_from_meta(cls, metadata: Dict[str, Any], env: Env
                        ) -> "ModelFreeAgent":
+        """
+        Load the agent from metadata.
+
+        Args:
+            metadata (Dict[str, Any]): The metadata to load from.
+            env (Env): The environment to use.
+
+        Returns:
+            Agent: The loaded agent.
+        """
         policy = metadata["policy"]
         model = metadata["model"]
         agent = cls(env, policy["name"], model["name"])
@@ -149,7 +212,8 @@ class ModelFreeAgent(Agent):
 
 
 class DQNAgent(ModelFreeAgent):
-    """This is the base class for all dqn agents."""
+    """Base class for all dqn agents."""
+
     name = ""
 
     def __init__(self, env: Env, policy: str, model: str = "dqn",
@@ -172,6 +236,7 @@ class DQNAgent(ModelFreeAgent):
         self.batch_size = 32
 
     def transfer_model_weights(self):
+        """Transfer the model weights to the target model."""
         self.target_model.update_weights_from_model(self.model)
 
     def train(self, discount_factor: float = 1.0,
@@ -210,10 +275,11 @@ class DQNAgent(ModelFreeAgent):
                     self.transfer_model_weights()
                     break
             msg = (f"Finished episode {i} in "
-                f"{int((time.time() - st) * 100000) / 100}ms.")
+                   f"{int((time.time() - st) * 100000) / 100}ms.")
             print(msg)
             print(f"Data size till now = {len(batch)}")
         print(f"Model trained in {int((time.time() - start) * 100) / 100}sec.")
 
     def _get_model(self):
+        """Get the neural network to use for training."""
         raise NotImplementedError("Base DQN agent can not make a model.")

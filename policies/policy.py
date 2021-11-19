@@ -1,14 +1,29 @@
-"""This implements base policy."""
+"""Implements base policy."""
 
-from typing import List, Tuple
+from typing import List
 
 
 class Policy(object):
-    """This implements base policy."""
+    """Implements base policy."""
+
     name = ''
 
-    def get_action(self, values: List[float]) -> Tuple[float, int]:
+    def get_action(self, values: List[float]) -> int:
+        """
+        Get the action to take.
+
+        Args:
+            values: The values of all the actions.
+
+        Returns:
+            The action to take.
+        """
         raise NotImplementedError("Base policy can not decide on action.")
 
-    def update_policy(self, update: float, **kwargs):
-        raise NotImplementedError("Base policy can not update.")
+    def exploit(self, **kwargs):
+        """Reduce epsilon to exploit the best action."""
+        raise NotImplementedError("Base policy can not change vars.")
+
+    def explore(self, **kwargs):
+        """Increase epsilon to explore the environment."""
+        raise NotImplementedError("Base policy can not change vars.")

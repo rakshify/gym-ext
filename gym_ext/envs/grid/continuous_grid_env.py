@@ -144,7 +144,7 @@ class ContGridEnv(GridEnv):
             # print(f"New velocity is: ({nvel}).")
             # print(f"New position is: ({npos}).")
             # print("+" * 80)
-            
+
         # # Action not allowed if results in blocked state
         # if self.states[nsi] == "x":
         #     nsi = si
@@ -174,10 +174,12 @@ class ContGridEnv(GridEnv):
         return (self.state, reward, done, {})
 
     def seed(self, seed=None):
+        """Seed the environment."""
         self.np_random, seed = seeding.np_random(seed)
         return [seed]
 
     def target_achieved(self, pos: np.ndarray) -> bool:
+        """Check if the target is reached."""
         dist_from_target = np.array([
             np.linalg.norm(ts - pos) for ts in self.target_states
         ])
@@ -199,6 +201,7 @@ class ContGridEnv(GridEnv):
         return GridRead.read_grid_size(1, 3)
 
     def read_target_states(self, grid_size: Tuple[int, int]):
+        """Read the target states from CLI."""
         return GridRead.read_target_states(
             grid_size[0], grid_size[1], 1, 3, read_float=True)
 

@@ -4,14 +4,13 @@ import argparse
 import json
 import os
 
-# import gym
-
 from agents import get_agent_by_name, load_agent
 from algorithms import get_algorithm_by_name
 from gym_ext import gym, load_env
 
 
 def create_argument_parser():
+    """Create the argument parser."""
     parser = argparse.ArgumentParser(description='parse incoming text')
     parser.add_argument('--example', '-e',
                         required=True,

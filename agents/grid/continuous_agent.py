@@ -1,21 +1,14 @@
-import argparse
-import json
-import os
-import sys
-import time
-
-from typing import Any, Dict, List, Tuple, Union
-
-import numpy as np
+"""Implements an agent for continuous grid env."""
 
 from agents.grid.agent import GridAgent
-from algorithms import Algorithm
-from gym_ext.envs import Env
 
 
 class ContGridAgent(GridAgent):
+    """Implements an agent for continuous grid env."""
+
     name = "ContGridWorld"
 
     @property
     def n_features(self):
+        """Get the number of features in state."""
         return self.env.observation_space.high.shape[0]

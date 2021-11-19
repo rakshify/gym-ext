@@ -1,4 +1,4 @@
-"""This implements a ridge model with a single weight vector."""
+"""Implements a ridge model with a single weight vector."""
 
 import numpy as np
 
@@ -6,7 +6,8 @@ from models.linear import Linear
 
 
 class Ridge(Linear):
-    """This implements a ridge model with a single weight vector."""
+    """Implements a ridge model with a single weight vector."""
+
     name = 'ridge'
 
     def predict(self, state: np.ndarray) -> np.ndarray:
@@ -19,13 +20,11 @@ class Ridge(Linear):
         Returns:
             Q-values for the given state.
         """
-        # return np.dot(self.w, state) + 0.25 * (np.linalg.norm(self.w)) ** 2
         return np.dot(self.w, state)
 
     def grad(self, state: np.ndarray, action: int) -> np.ndarray:
         """
-        Compute the gradient of the model's output with respect to the
-        model's variables.
+        Compute the gradient of the model's output wrt the model's variables.
 
         Args:
             state: The state.
