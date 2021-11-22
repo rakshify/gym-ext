@@ -31,20 +31,21 @@ def solve_env(env_name: str, step: str, model_dir: str):
         # agent = get_agent_by_name("DQNGrid")(
         #     env, policy="greedy")
         # agent.train(num_episodes=100000)
-        agent = get_agent_by_name("ContGridWorld")(
-            env, model="linear", policy="greedy")
+        # agent = get_agent_by_name("ContGridWorld")(
+        #     env, model="linear", policy="greedy")
+        agent = get_agent_by_name("SGDPolicyGrid")(env, policy="softmax")
         algorithm = get_algorithm_by_name("sarsa_lambda")()
-        agent.train(algorithm, num_episodes=10000)
-        metadata = env.update_metadata(metadata={"model_dir": model_dir})
-        metadata = agent.update_metadata(metadata=metadata)
-        # metadata = agent.update_metadata(metadata={"model_dir": model_dir})
+        agent.train(algorithm, num_episodes=1000000)
+        # metadata = env.update_metadata(metadata={"model_dir": model_dir})
+        # metadata = agent.update_metadata(metadata=metadata)
+        metadata = agent.update_metadata(metadata={"model_dir": model_dir})
         with open(os.path.join(model_dir, "metadata.json"), "w") as f:
             json.dump(metadata, f)
     elif step == "predict":
         with open(os.path.join(model_dir, "metadata.json")) as f:
             metadata = json.load(f)
-        env = load_env(metadata)
-        # env = gym.make(env_name)
+        # env = load_env(metadata)
+        env = gym.make(env_name)
         agent = load_agent(metadata, env)
         state = env.reset()
         print(state)

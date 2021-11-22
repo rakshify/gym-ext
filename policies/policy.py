@@ -27,3 +27,7 @@ class Policy(object):
     def explore(self, **kwargs):
         """Increase epsilon to explore the environment."""
         raise NotImplementedError("Base policy can not change vars.")
+
+    def serialize(self):
+        """Serialize the variables."""
+        return {"name": self.name}
