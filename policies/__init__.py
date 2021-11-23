@@ -1,10 +1,9 @@
 """All policies."""
 
 from policies.policy import Policy
-from policies.greedy import Greedy
 from policies.softmax import Softmax
 
-_ALL_POLICIES = [Greedy, Softmax]
+_ALL_POLICIES = [Softmax]
 _REGISTERED_POLICIES = {p.name: p for p in _ALL_POLICIES}
 
 
