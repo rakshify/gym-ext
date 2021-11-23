@@ -2,7 +2,7 @@
 
 from typing import Any, Dict
 
-from agents.base_agents.agent import Agent
+from agents.base.agent import Agent
 from gym_ext.envs import Env
 from policies import get_policy_by_name
 

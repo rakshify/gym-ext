@@ -42,6 +42,11 @@ class Sarsa(Algorithm):
                 break
         return cum_reward
 
+    def serialize(self) -> dict:
+        """Serialize the algorithm."""
+
+        return {"name": self.name}
+
 
 class SarsaLambda(Sarsa):
     """Implements the SARSA-lambda algorithm."""
@@ -93,3 +98,13 @@ class SarsaLambda(Sarsa):
             if done:
                 break
         return cum_reward
+
+    def serialize(self) -> dict:
+        """Serialize the algorithm."""
+
+        return {"name": self.name, "lamda": self.lamda}
+
+    def load_vars(self, vars: dict):
+        """Load the variables of the algorithm."""
+
+        self.lamda = vars["lamda"]

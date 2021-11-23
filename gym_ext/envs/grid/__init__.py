@@ -5,4 +5,8 @@ from gym_ext.envs.grid.one_hot_grid_env import OneHotGridEnv
 from gym_ext.envs.grid.continuous_grid_env import ContGridEnv
 
 
-_ALL_ENVS = [GridEnv, OneHotGridEnv, ContGridEnv]
+__all__ = [
+    'GridEnv',
+    'OneHotGridEnv',
+    'ContGridEnv',
+]

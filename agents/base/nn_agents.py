@@ -2,12 +2,12 @@
 
 from typing import Any, Dict
 
-from agents.base_agents.value_agents import ModelFreeAgent
+from agents.base.value_agents import ModelFreeValueAgent
 from gym_ext.envs import Env
 from models import get_model_by_name
 
 
-class DQNAgent(ModelFreeAgent):
+class DQNAgent(ModelFreeValueAgent):
     """Base class for all dqn agents."""
 
     name = ""

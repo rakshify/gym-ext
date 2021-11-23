@@ -3,10 +3,11 @@
 from typing import Any, Dict
 
 from gym_ext.envs.base_env import Env
-from gym_ext.envs.grid import _ALL_ENVS as _ALL_GRID_ENVS
+from gym_ext.envs.grid import GridEnv, OneHotGridEnv, ContGridEnv
 
-_ALL_ENVS = _ALL_GRID_ENVS
+_ALL_ENVS = [GridEnv, OneHotGridEnv, ContGridEnv]
 _REGISTERED_ENVS = {e.name: e for e in _ALL_ENVS}
+GYM_EXT_ENVS = [f'{env.name}-{env.version}' for env in _ALL_ENVS]
 
 
 def load_env(metadata: Dict[str, Any]) -> Env:

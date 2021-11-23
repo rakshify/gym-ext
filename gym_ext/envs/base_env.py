@@ -53,4 +53,4 @@ class Env(gym.Env):
         Returns:
             An Env.
         """
-        raise NotImplementedError("Base env can not be loaded from metadata.")
+        return gym.make(meta["env"]["name"])

@@ -5,7 +5,7 @@ import os
 
 import gym
 
-from gym_ext.envs import _ALL_ENVS, load_env
+from gym_ext.envs import _ALL_ENVS, load_env, GYM_EXT_ENVS
 
 
 for env in _ALL_ENVS:

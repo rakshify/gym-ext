@@ -1,8 +1,13 @@
 """Implements base value agents."""
 
-from typing import Any, Dict
+import os
+import time
 
-from agents.base_agents.agent import Agent
+from typing import Any, Dict, Tuple, Union
+
+import numpy as np
+
+from agents.base.agent import Agent
 from algorithms import get_algorithm_by_name
 from gym_ext.envs import Env
 from models import get_model_by_name

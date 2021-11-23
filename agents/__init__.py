@@ -11,14 +11,17 @@ _ALL_AGENTS = _ALL_GRID_AGENTS
 _REGISTERED_AGENTS = {a.name: a for a in _ALL_AGENTS}
 
 
-def get_agent_by_name(name: str) -> Agent:
+def get_agent_by_name(name: str, env, **kwargs) -> Agent:
     """Get an agent by name."""
     if name not in _REGISTERED_AGENTS:
         raise ValueError(f"Agent {name} not found.")
-    return _REGISTERED_AGENTS[name]
+    return _REGISTERED_AGENTS[name](env, **kwargs)
 
 
 def load_agent(metadata: Dict[str, Any], env: Env):
     """Load an agent from metadata."""
     meta = metadata["agent"]
-    return get_agent_by_name(meta["name"]).load_from_meta(meta, env)
+    name = meta["name"]
+    if name not in _REGISTERED_AGENTS:
+        raise ValueError(f"Agent {name} not found.")
+    return _REGISTERED_AGENTS[name].load_from_meta(meta, env)
