@@ -27,6 +27,7 @@ __credits__ = pkg_info["credits"]
 
 __all__ = [
     'load_env',
+    'GYM_EXT_ENVS',
     '__version__',
     '__author__',
     '__credits__'

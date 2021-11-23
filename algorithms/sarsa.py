@@ -44,7 +44,6 @@ class Sarsa(Algorithm):
 
     def serialize(self) -> dict:
         """Serialize the algorithm."""
-
         return {"name": self.name}
 
 
@@ -101,10 +100,8 @@ class SarsaLambda(Sarsa):
 
     def serialize(self) -> dict:
         """Serialize the algorithm."""
-
         return {"name": self.name, "lamda": self.lamda}
 
     def load_vars(self, vars: dict):
         """Load the variables of the algorithm."""
-
         self.lamda = vars["lamda"]

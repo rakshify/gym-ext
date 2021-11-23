@@ -1,12 +1,6 @@
 """Implements the base class for all agents."""
 
-import os
-import random
-import time
-
 from typing import Any, Dict
-
-import numpy as np
 
 from gym_ext.envs import Env
 

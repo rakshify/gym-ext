@@ -177,7 +177,6 @@ class ModelFreeValueAgent(ValueAgent):
         return self.model.vec_shape
 
 
-
 class AlgorithmBasedAgent(ModelFreeValueAgent):
     """Base class for all algorithm-based agents."""
 

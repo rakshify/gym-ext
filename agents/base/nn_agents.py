@@ -1,6 +1,9 @@
 """Implements base neural agents."""
 
-from typing import Any, Dict
+import random
+import time
+
+import numpy as np
 
 from agents.base.value_agents import ModelFreeValueAgent
 from gym_ext.envs import Env
@@ -21,7 +24,7 @@ class DQNAgent(ModelFreeValueAgent):
             model (str): The model to use. Fixed to dqn model
             verbose (bool): Whether to print out information.
         """
-        super(DQNAgent, self).__init__(env, policy, model, verbose)
+        super(DQNAgent, self).__init__(env, model, verbose)
         self.target_model = get_model_by_name(model)()
         self.train_after = 1000
         model = self._get_model()

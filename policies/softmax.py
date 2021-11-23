@@ -1,9 +1,8 @@
 """Implements softmax policy."""
 
 import os
-import random
 
-from typing import Any, Dict, List
+from typing import Dict
 
 import numpy as np
 
@@ -55,7 +54,7 @@ class Softmax(Policy):
         Args:
             state: The state.
             action: The action.
-        
+
         Returns:
             The gradient of the score function wrt the policy's parameters.
         """
