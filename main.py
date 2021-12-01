@@ -75,11 +75,23 @@ def main():
             os.makedirs(model_dir)
         else:
             raise IOError("Can not load model from a non-existent directory.")
+    # agent_kwargs = {
+    #     "model": "linear",
+    #     "algorithm": "sarsa_lambda"
+    # }
+    # agent_kwargs = {"policy": "softmax", "num_episodes": 500000}
     agent_kwargs = {
-        "model": "linear",
-        "algorithm": "sarsa_lambda"
+        "actor": {
+            "name": "ContSGDPolicyGrid",
+            "policy": "softmax"
+        },
+        "critic": {
+            "name": "ContGridWorld",
+            "model": "linear",
+            "algorithm": "sarsa_lambda"
+        },
+        "num_episodes": 10000
     }
-    # agent_kwargs = {"policy": "softmax", "num_episodes": 200000}
     solve_env(env_name, agent_name, step, model_dir, **agent_kwargs)
 
 

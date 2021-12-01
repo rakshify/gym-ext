@@ -41,11 +41,10 @@ class ValueAgent(Agent):
         Returns:
             Any: The action to take.
         """
-        q_val, action = self.get_qval_action(state)
-        return action
+        q_vals = self.get_qvals(state)
+        return self._eps_greedy(q_vals)
 
-    def get_qval_action(self, state: Union[int, np.ndarray]
-                        ) -> Tuple[np.ndarray, int]:
+    def get_qvals(self, state: Union[int, np.ndarray]) -> np.ndarray:
         """
         Get the q-value and action for a state.
 
@@ -54,7 +53,7 @@ class ValueAgent(Agent):
                                             and action for.
 
         Returns:
-            Tuple[np.ndarray, int]: The q-value and action.
+            np.ndarray: The q-values.
         """
         # TODO: Implement this method.
         raise NotImplementedError("Temporarily not implemented")
@@ -99,7 +98,7 @@ class ModelFreeValueAgent(ValueAgent):
 
     name = ""
 
-    def __init__(self, env: Env, model: str, verbose: bool = False,
+    def __init__(self, env: Env, model: str = None, verbose: bool = False,
                  **kwargs):
         """
         Initialize the base agent.
@@ -115,8 +114,7 @@ class ModelFreeValueAgent(ValueAgent):
             self.model_name = model
             self.model = get_model_by_name(model)()
 
-    def get_qval_action(self, state: Union[int, np.ndarray]
-                        ) -> Tuple[np.ndarray, Any]:
+    def get_qvals(self, state: Union[int, np.ndarray]) -> np.ndarray:
         """
         Get the q-value and action for a state.
 
@@ -125,10 +123,9 @@ class ModelFreeValueAgent(ValueAgent):
                                             and action for.
 
         Returns:
-            Tuple[np.ndarray, Any]: The q-value and action.
+            np.ndarray: The q-values.
         """
-        qvals = self.model.predict(state)
-        return qvals, self._eps_greedy(qvals)
+        return self.model.predict(state)
 
     def update_metadata(self, metadata: Dict[str, Any]):
         """
@@ -182,7 +179,7 @@ class AlgorithmBasedAgent(ModelFreeValueAgent):
 
     name = ""
 
-    def __init__(self, env: Env, model: str, algorithm: str,
+    def __init__(self, env: Env, model: str = None, algorithm: str = None,
                  verbose: bool = False, **kwargs):
         """
         Initialize the base agent.
@@ -196,8 +193,9 @@ class AlgorithmBasedAgent(ModelFreeValueAgent):
         """
         super(AlgorithmBasedAgent, self).__init__(
             env, model, verbose, **kwargs)
-        self.algorithm_name = algorithm
-        self.algorithm = get_algorithm_by_name(algorithm)()
+        if algorithm is not None:
+            self.algorithm_name = algorithm
+            self.algorithm = get_algorithm_by_name(algorithm)()
 
     def train(self, num_episodes: int = 10000, **kwargs):
         """
@@ -221,6 +219,9 @@ class AlgorithmBasedAgent(ModelFreeValueAgent):
                    f"with reward = {er}.")
             print(msg)
         print(f"Model trained in {int((time.time() - start) * 100) / 100}sec.")
+
+    def reset_vars(self):
+        self.algorithm.reset_vars()
 
     def update_metadata(self, metadata: Dict[str, Any]):
         """

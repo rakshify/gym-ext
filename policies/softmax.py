@@ -75,7 +75,9 @@ class Softmax(Policy):
         Returns:
             The action probabilities.
         """
-        exp = np.exp(np.dot(self.w, state))
+        vals = np.dot(self.w, state)
+        vmax = np.max(vals)
+        exp = np.exp(vals - vmax)
         return exp / np.sum(exp)
 
     # @property

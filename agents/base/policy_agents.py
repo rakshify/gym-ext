@@ -17,7 +17,7 @@ class PolicyAgent(Agent):
 
     name = ""
 
-    def __init__(self, env: Env, policy: str, verbose: bool = False,
+    def __init__(self, env: Env, policy: str = None, verbose: bool = False,
                  **kwargs):
         """
         Initialize the base agent.
@@ -29,8 +29,9 @@ class PolicyAgent(Agent):
             **kwargs: Additional arguments.
         """
         super(PolicyAgent, self).__init__(env, verbose, **kwargs)
-        self.policy_name = policy
-        self.policy = get_policy_by_name(policy)()
+        if policy is not None:
+            self.policy_name = policy
+            self.policy = get_policy_by_name(policy)()
 
     def update_metadata(self, metadata: Dict[str, Any]):
         """
