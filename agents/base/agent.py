@@ -21,6 +21,7 @@ class Agent(object):
         """
         self.env = env
         self.verbose = verbose
+        self.info_episode = kwargs.get("info_episode", 1)
 
     def get_action(self, state: Any) -> Any:
         """

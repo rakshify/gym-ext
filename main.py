@@ -77,9 +77,11 @@ def main():
             raise IOError("Can not load model from a non-existent directory.")
     # agent_kwargs = {
     #     "model": "linear",
-    #     "algorithm": "sarsa_lambda"
+    #     "algorithm": "sarsa_lambda",
+    #     # "num_episodes": 100000,
+    #     "info_episode": 100
     # }
-    # agent_kwargs = {"policy": "softmax", "num_episodes": 500000}
+    # agent_kwargs = {"policy": "softmax", "num_episodes": 500000, "info_episode": 100}
     agent_kwargs = {
         "actor": {
             "name": "ContSGDPolicyGrid",
@@ -90,7 +92,8 @@ def main():
             "model": "linear",
             "algorithm": "sarsa_lambda"
         },
-        "num_episodes": 10000
+        "num_episodes": 100000,
+        "info_episode": 100
     }
     solve_env(env_name, agent_name, step, model_dir, **agent_kwargs)
 

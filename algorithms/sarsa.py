@@ -94,7 +94,6 @@ class Sarsa(Algorithm):
         nqval = nqvals[action_]
         grad = grad_func(state, action)
         update = self.get_update(reward, qval, nqval, grad, vec_shape, df)
-        print(update)
         return state_, action_, nqval, update, reward, done
 
     def serialize(self) -> dict:
@@ -144,49 +143,6 @@ class SarsaLambda(Sarsa):
 
     def reset_vars(self):
         self.elig_traces = None
-
-    # def solve_episode(self, env: Env, agent, df: float) -> float:
-    #     """
-    #     Solve a single episode using the SARSA lambda algorithm.
-
-    #     Args:
-    #         env: The environment to solve.
-    #         agent: Solver to solve the environment.
-    #         df: The discount factor to use.
-
-    #     Returns:
-    #         The total reward for the episode.
-    #     """
-    #     state = env.reset()
-    #     qvals = agent.get_qvals(state)
-    #     action = agent.get_action(state)
-    #     qval = qvals[action]
-    #     alpha = 0
-    #     # sepsilon = 0
-    #     cum_reward = 0
-    #     while True:
-    #         alpha += 1
-    #         if alpha % 10000 == 0:
-    #             # sepsilon += 1
-    #             agent.explore_policy()
-    #         state, action, qval, update, reward, done = self.solve_step(
-    #             env.step, agent.get_qvals, agent.get_action, agent.q_grad
-    #             agent.vec_shape, state, action, qval, df)
-    #         agent.update_model(update * (1 / alpha))
-
-    #         # state_, reward, done, _ = env.step(action)
-    #         # next_qvals, action_ = agent.get_qval_action(state_)
-    #         # next_qval = next_qvals[action_]
-    #         # update = reward + df * next_qval - qval
-    #         # grad = agent.q_grad(state, action)
-    #         # elig_traces = df * self.lamda * elig_traces + grad
-    #         # agent.update_model(update * elig_traces * (1 / alpha))
-    #         # state, action, qval = state_, action_, next_qval
-
-    #         cum_reward += reward
-    #         if done:
-    #             break
-    #     return cum_reward
 
     def serialize(self) -> dict:
         """Serialize the algorithm."""

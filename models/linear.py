@@ -46,6 +46,7 @@ class Linear(Model):
             kwargs: Additional arguments.
         """
         self.w += update
+        # self.w /= np.linalg.norm(self.w) / 100
         # print(self.w)
         # print("+" * 80)
 

@@ -141,7 +141,8 @@ class ModelFreePolicyAgent(PolicyAgent):
             for state, action, reward, update in history:
                 alpha += 1
                 self.policy.update_policy((1 / alpha) * update * reward)
-            msg = (f"Finished episode {i} in "
-                   f"{int((time.time() - st) * 100000) / 100}ms.")
-            print(msg)
+            if (i + 1) % self.info_episode == 0:
+                msg = (f"Finished episode {i} in "
+                    f"{int((time.time() - st) * 100000) / 100}ms.")
+                print(msg)
         print(f"Model trained in {int((time.time() - start) * 100) / 100}sec.")

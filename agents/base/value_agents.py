@@ -214,10 +214,11 @@ class AlgorithmBasedAgent(ModelFreeValueAgent):
             er = self.algorithm.solve_episode(self.env, self, discount_factor)
             episode_rewards.append(er)
             self.exploit_policy()
-            msg = (f"Finished episode {i} in "
-                   f"{int((time.time() - st) * 100000) / 100}ms "
-                   f"with reward = {er}.")
-            print(msg)
+            if (i + 1) % self.info_episode == 0:
+                msg = (f"Finished episode {i} in "
+                    f"{int((time.time() - st) * 100000) / 100}ms "
+                    f"with reward = {er}.")
+                print(msg)
         print(f"Model trained in {int((time.time() - start) * 100) / 100}sec.")
 
     def reset_vars(self):

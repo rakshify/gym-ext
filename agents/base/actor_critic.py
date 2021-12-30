@@ -29,6 +29,18 @@ class ActorCriticAgent(Agent):
         self.actor = actor
         self.critic = critic
 
+    def get_action(self, state: Any) -> Any:
+        """
+        Get the action to take.
+
+        Args:
+            state (Any): The state to get the action for.
+
+        Returns:
+            Any: The action to take.
+        """
+        return self.actor.get_action(state)
+
     def train(self, num_episodes: int = 10000, **kwargs):
         """
         Train the agent.
@@ -41,6 +53,8 @@ class ActorCriticAgent(Agent):
         df = kwargs.get("discount_factor", 1.0)
         self.actor.policy.init_vars(self.n_features, self.n_actions)
         self.critic.model.init_vars(self.n_features, self.n_actions)
+        steps = []
+        last_info = 0
         for i in range(num_episodes):
             st = time.time()
             state = self.env.reset()
@@ -52,6 +66,13 @@ class ActorCriticAgent(Agent):
                 alpha += 1.0
                 qvals = self.critic.get_qvals(state)
                 qval = qvals[action]
+                # print("+" * 80)
+                # print(self.critic.model.w)
+                # print("+" * 80)
+                # print(state)
+                # print("+" * 80)
+                # print(qvals)
+                # print("+" * 80)
                 state_, reward, done, info = self.env.step(action)
                 r = reward
                 if done:
@@ -72,11 +93,23 @@ class ActorCriticAgent(Agent):
                 if done:
                     break
             for update in updates:
+                # print(update)
                 self.actor.policy.update_policy(update)
-            print(f"Steps in this episode = {int(alpha)}")
-            msg = (f"Finished episode {i} in "
-                   f"{int((time.time() - st) * 100000) / 100}ms.")
-            print(msg)
+            steps.append(alpha)
+            if (i + 1) % self.info_episode == 0:
+                msg = (f"Finished episode {i} in "
+                       f"{int((time.time() - st) * 100000) / 100}ms.")
+                mx = max(steps)
+                avg = int(100 * sum(steps) / len(steps)) / 100
+                last = steps[last_info:]
+                mx_since_last = max(last)
+                avg_since_last = int(100 * sum(last) / len(last)) / 100
+                print(f"Max steps so far = {mx}..."
+                      f"Average steps so far = {avg}")
+                print(f"Max steps since last info = {mx_since_last}..."
+                      f"Average steps since last info = {avg_since_last}")
+                print(msg)
+                last_info = i
         print(f"Model trained in {int((time.time() - start) * 100) / 100}sec.")
 
     def update_metadata(self, metadata: Dict[str, Any]):
@@ -115,7 +148,7 @@ class ActorCriticAgent(Agent):
         Returns:
             Agent: The loaded agent.
         """
-        agent = cls(env, metadata["agent"]["policy"]["name"],
-                    verbose=metadata["verbose"])
-        agent.policy.deserialize(metadata["agent"]["policy"])
-        return agent
+        # agent = cls(env, metadata["policy"]["name"],
+        #             verbose=metadata["verbose"])
+        # agent.policy.deserialize(metadata["policy"])
+        return cls(env)
